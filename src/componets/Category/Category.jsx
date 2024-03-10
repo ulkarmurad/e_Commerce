@@ -1,32 +1,28 @@
-import React from 'react'
-import { Link } from "react-router-dom";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const Category = () => {
-  return (
-	 <div>
-		<div>
-			<h1 className='text-[25px]'>Category</h1>
 
-		</div>
-		<div >
-            <ul className="flex-col gap-8 mr-20 text-[18px]">
-              <li>
-                <Link to="/Men">Men</Link>
-              </li>
-              <li>
-                
-                <Link to="/women"> Women</Link>
-              </li>
-              <li>
-                <Link to="/jewelery">Jewelery</Link>
-              </li>
-              <li>
-                <Link to="/electronics">Electronics</Link>
-              </li>
-            </ul>
-          </div>
-	 </div>
-  )
+const initialState ={
+	categories: []
 }
 
-export default Category
+export const getCategories = createAsyncThunk('category', async() =>{
+	const response = await fetch('https://fakestoreapi.com/products/categories')
+	const data = response.json();
+	return data;
+})
+
+
+const category = createSlice({
+	name: "categories",
+	initialState,
+	reducers : {},
+	extraReducers : (builder) => {
+		builder
+		.addCase(getCategories.fulfilled, (state, action) => {
+			state.categories = action.payload
+		})
+	}
+})
+
+export default category.reducer
+
